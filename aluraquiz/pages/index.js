@@ -1,13 +1,9 @@
-import styled from "styled-components";
 import db from "../db.json";
+import styled from "styled-components";
+import QuizBackground from "../src/components/QuizBackground";
 import Widget from "../src/components/Widget";
-
-const Background = styled.div`
-    background-image: url(${db.bg});
-    flex: 1;
-    background-size: cover;
-    background-position: center;
-`;
+import Footer from "../src/components/Footer";
+import GitHubCorner from "../src/components/GitHubCorner";
 
 const QuizContainer = styled.div`
     width: 100%;
@@ -22,7 +18,7 @@ const QuizContainer = styled.div`
 
 export default function Home() {
     return (
-        <Background>
+        <QuizBackground backgroundImage={db.bg}>
             <QuizContainer>
                 <Widget>
                     <Widget.Header>
@@ -33,11 +29,14 @@ export default function Home() {
                     </Widget.Content>
                 </Widget>
                 <Widget>
-                    <h1> The legend of zelda </h1>
-
-                    <p> Lorem ipsum </p>
+                    <Widget.Content>
+                        <h1> The legend of zelda </h1>
+                        <p> Lorem ipsum </p>
+                    </Widget.Content>
                 </Widget>
+                <Footer />
             </QuizContainer>
-        </Background>
+            <GitHubCorner projectUrl="https://github.com/MaximianoEduardo" />
+        </QuizBackground>
     );
 }
