@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const Widget = styled.div`
     margin: 24px 0;
@@ -45,6 +45,32 @@ Widget.Content = styled.div`
         list-style: none;
         padding: 0;
     }
+
+	form{
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		button{
+			margin-top: 25px;
+			height: 36px;
+			border: none;
+			border-radius: ${({ theme }) => theme.borderRadius};
+			background-color: ${({ theme }) => theme.colors.primary};
+			font-weight: 700;
+			color: ${({ theme }) => theme.colors.contrastText};
+			font-size: 14px;
+			letter-spacing: 1.25px;
+			transition: 300ms ease-in;
+		}
+
+		button:disabled,
+		button[disabled]{
+			background: #979797;
+		}
+
+	}
+
+    
 `;
 
 export default Widget;
