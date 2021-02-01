@@ -1,11 +1,11 @@
  /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
-import db from '../db.json';
+import React, { useEffect, useState } from 'react'
+import db from '../db.json'
 import QuizContainer from '../src/components/QuizContainer'
-import QuizBackground from '../src/components/QuizBackground';
-import Widget from '../src/components/Widget';
-import QuizLogo from '../src/components/QuizLogo';
-import Button from '../src/components/Button';
+import QuizBackground from '../src/components/QuizBackground'
+import Widget from '../src/components/Widget'
+import QuizLogo from '../src/components/QuizLogo'
+import Button from '../src/components/Button'
 
 
 const LoadingWidget = () => {
@@ -23,7 +23,9 @@ const LoadingWidget = () => {
 
 const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =>{
 
-	const questionId = `question__${questionIndex}`;
+	const [selectedAlternative, setSelectedAlternative] = useState(undefined)
+	const questionId = `question__${questionIndex}`
+	const isCorrect = selectedAlternative === question.answer
 
 	return(
 		<Widget>
@@ -51,12 +53,12 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =
 				</p>
 				<form
 					onSubmit={(ev) => {
-						ev.preventDefault();
-						onSubmit();
+						ev.preventDefault()
+						onSubmit()
 					}}
 				>
 				{question.alternatives.map((alternative, alternativeIndex) => {
-					const alternativeId = `alternative__${alternativeIndex}`;
+					const alternativeId = `alternative__${alternativeIndex}`
 					return (
 					<Widget.Topic
 						as="label"
@@ -66,18 +68,24 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =
 						<input
 						id={alternativeId}
 						name={questionId}
-						
 						type="radio"
+						onChange={ () => {
+							setSelectedAlternative(alternativeIndex)
+						}}
 						/>
 						{alternative}
 					</Widget.Topic>
-					);
+					)
 				})}
 
 				
 				<Button type="submit">
 					Confirmar
 				</Button>
+
+				{isCorrect && <p>Você acertou! </p> }
+				{!isCorrect && <p>Você errou! </p> }
+
 				</form>
             </Widget.Content>
           </Widget>
@@ -97,7 +105,7 @@ const screenStates = {
 export default function QuizPage() {
 
 	const [screenState, setScreenState] = useState(screenStates.LOADING)
-	const totalQuestions = db.questions.length;
+	const totalQuestions = db.questions.length
 	const [currentQuestion, setCurrentQuestion] = useState(0)
 	const questionIndex = currentQuestion
 	const question = db.questions[questionIndex]
@@ -113,12 +121,12 @@ export default function QuizPage() {
 
 	const handleSubmit = () => {
 
-		const nextQuestion = questionIndex + 1;
+		const nextQuestion = questionIndex + 1
 
 		if (nextQuestion < totalQuestions) {
-		  setCurrentQuestion(nextQuestion);
+		  setCurrentQuestion(nextQuestion)
 		} else {
-		  setScreenState(screenStates.RESULT);
+		  setScreenState(screenStates.RESULT)
 		}
 
 	}
@@ -143,5 +151,5 @@ export default function QuizPage() {
         </QuizContainer>
       </QuizBackground>
     </>
-  );
+  )
 }
