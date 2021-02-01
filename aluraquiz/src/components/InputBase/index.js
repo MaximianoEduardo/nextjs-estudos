@@ -24,6 +24,13 @@ function Input({ onChange, placeholder, ...props }) {
 	)
 }
 
+Input.defaultProps = {
+
+	value: ''
+
+}
+
+
 Input.propTypes = {
 
 
