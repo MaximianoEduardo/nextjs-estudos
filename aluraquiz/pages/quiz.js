@@ -29,16 +29,19 @@ return(
 				Parabens
 			</Widget.Header>
 			<Widget.Content>
-				<p> Você acertou  questões! </p>
+				<p> Você acertou 
+					{' '}
+					{ results.filter((x) => x).length }
+					{' '}
+					perguntas! </p>
 				<ul>
 					{
-						results.map((result) => (
-							console.log(result),
-							<li>
-								#01 Resultado:
+						results.map((result, index) => (
+							<li key={index}>
+								# {index + 1} {' '} Resultado:
 								{ result === true 
-								  ? 'Acertou' 
-								  : 'Errou'
+								  ? ' Acertou' 
+								  : ' Errou'
 								}	
 							</li>
 
@@ -54,7 +57,7 @@ return(
 
 }
 
-const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =>{
+const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit, addResults }) =>{
 
 	const [selectedAlternative, setSelectedAlternative] = useState(undefined)
 	const [ isQuestionSubmited, seIsQuestionSubmited ] = useState(false)
@@ -91,6 +94,7 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =
 						ev.preventDefault()
 						seIsQuestionSubmited(true)
 						setTimeout(() => {
+							addResults(isCorrect)
 							onSubmit()
 							seIsQuestionSubmited(false)
 							setSelectedAlternative(undefined)
@@ -145,18 +149,27 @@ const screenStates = {
 
 export default function QuizPage() {
 
-	const [screenState, setScreenState] = useState(screenStates.RESULT)
-	const [ results, setResults ] = useState([ true, false, true ])
+	const [screenState, setScreenState] = useState(screenStates.QUIZ)
+	const [ results, setResults ] = useState([])
 	const totalQuestions = db.questions.length
 	const [currentQuestion, setCurrentQuestion] = useState(0)
 	const questionIndex = currentQuestion
 	const question = db.questions[questionIndex]
 
+	const addResults = result => {
+
+		setResults([
+			...results,
+			result
+		])
+
+	}
+
 
 	useEffect(() => {
 		setTimeout( () => {
 
-			//setScreenState(screenStates.QUIZ)
+			setScreenState(screenStates.QUIZ)
 	
 		}, 1 * 1000)
 	}, [])
@@ -184,6 +197,7 @@ export default function QuizPage() {
 				 questionIndex={questionIndex}
 				 totalQuestions={totalQuestions}
 				 onSubmit={handleSubmit}
+				 addResults={addResults}
 			  />)
 		  }
 		  {screenState === screenStates.LOADING && <LoadingWidget />}
