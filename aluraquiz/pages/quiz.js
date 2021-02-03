@@ -21,9 +21,44 @@ const LoadingWidget = () => {
 	)
 }
 
+const ResultWidget = ({ results }) => {
+
+return(
+		<Widget>
+			<Widget.Header>
+				Parabens
+			</Widget.Header>
+			<Widget.Content>
+				<p> Você acertou  questões! </p>
+				<ul>
+					{
+						results.map((result) => (
+							console.log(result),
+							<li>
+								#01 Resultado:
+								{ result === true 
+								  ? 'Acertou' 
+								  : 'Errou'
+								}	
+							</li>
+
+						))
+					}
+					
+				</ul>
+			</Widget.Content>
+		</Widget>
+	)
+
+
+
+}
+
 const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =>{
 
 	const [selectedAlternative, setSelectedAlternative] = useState(undefined)
+	const [ isQuestionSubmited, seIsQuestionSubmited ] = useState(false)
+	const hasAlternativeSelected = selectedAlternative !== undefined
 	const questionId = `question__${questionIndex}`
 	const isCorrect = selectedAlternative === question.answer
 
@@ -54,7 +89,13 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =
 				<form
 					onSubmit={(ev) => {
 						ev.preventDefault()
-						onSubmit()
+						seIsQuestionSubmited(true)
+						setTimeout(() => {
+							onSubmit()
+							seIsQuestionSubmited(false)
+							setSelectedAlternative(undefined)
+						}, 2 * 1000)
+						
 					}}
 				>
 				{question.alternatives.map((alternative, alternativeIndex) => {
@@ -79,12 +120,12 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit }) =
 				})}
 
 				
-				<Button type="submit">
+				<Button type="submit" disable={!hasAlternativeSelected}>
 					Confirmar
 				</Button>
 
-				{isCorrect && <p>Você acertou! </p> }
-				{!isCorrect && <p>Você errou! </p> }
+				{ isQuestionSubmited && isCorrect && <p>Você acertou! </p> }
+				{ isQuestionSubmited && !isCorrect && <p>Você errou! </p> }
 
 				</form>
             </Widget.Content>
@@ -104,7 +145,8 @@ const screenStates = {
 
 export default function QuizPage() {
 
-	const [screenState, setScreenState] = useState(screenStates.LOADING)
+	const [screenState, setScreenState] = useState(screenStates.RESULT)
+	const [ results, setResults ] = useState([ true, false, true ])
 	const totalQuestions = db.questions.length
 	const [currentQuestion, setCurrentQuestion] = useState(0)
 	const questionIndex = currentQuestion
@@ -114,7 +156,7 @@ export default function QuizPage() {
 	useEffect(() => {
 		setTimeout( () => {
 
-			setScreenState(screenStates.QUIZ)
+			//setScreenState(screenStates.QUIZ)
 	
 		}, 1 * 1000)
 	}, [])
@@ -146,7 +188,7 @@ export default function QuizPage() {
 		  }
 		  {screenState === screenStates.LOADING && <LoadingWidget />}
 
-		  {screenState === screenStates.RESULT && <div> Você acertou X questões, parabens </div>}
+		  {screenState === screenStates.RESULT && <ResultWidget results={results} />}
 		  
         </QuizContainer>
       </QuizBackground>
