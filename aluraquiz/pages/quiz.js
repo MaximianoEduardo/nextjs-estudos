@@ -6,6 +6,8 @@ import QuizBackground from '../src/components/QuizBackground'
 import Widget from '../src/components/Widget'
 import QuizLogo from '../src/components/QuizLogo'
 import Button from '../src/components/Button'
+import AlternativesForms from '../src/components/AlternativesForm'
+
 
 
 const LoadingWidget = () => {
@@ -37,7 +39,7 @@ return(
 				<ul>
 					{
 						results.map((result, index) => (
-							<li key={index}>
+							<li key={`results__${index}`}>
 								# {index + 1} {' '} Resultado:
 								{ result === true 
 								  ? ' Acertou' 
@@ -89,7 +91,7 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit, add
 				<p>
 					{question.description}
 				</p>
-				<form
+				<AlternativesForms
 					onSubmit={(ev) => {
 						ev.preventDefault()
 						seIsQuestionSubmited(true)
@@ -104,11 +106,15 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit, add
 				>
 				{question.alternatives.map((alternative, alternativeIndex) => {
 					const alternativeId = `alternative__${alternativeIndex}`
+					const alternativeStatus = isCorrect ? 'SUCESS' : 'ERROR'
+					const isSelected = selectedAlternative === alternativeIndex
 					return (
 					<Widget.Topic
 						as="label"
 						htmlFor={alternativeId}
 						key={alternativeId}
+						data-selected={isSelected}
+						data-status={isQuestionSubmited && alternativeStatus }
 					>
 						<input
 						id={alternativeId}
@@ -131,7 +137,7 @@ const QuestionWidget = ({ question, questionIndex, totalQuestions, onSubmit, add
 				{ isQuestionSubmited && isCorrect && <p>Você acertou! </p> }
 				{ isQuestionSubmited && !isCorrect && <p>Você errou! </p> }
 
-				</form>
+				</AlternativesForms>
             </Widget.Content>
           </Widget>
 	)
